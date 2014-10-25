@@ -18,10 +18,6 @@ size of grid (including boundary)
 #include <mpi.h>
 #include "Fdiff.h"
 
-#define DEBUG 0
-#define PRINT_CYCLES 2
-#define COMM_COMP_RATIO 1000.0
-
 // less likely to overflow
 int find_pos(int i, int P, int N) {
 	return i * (N / P) + i * (N % P) / P;
@@ -65,6 +61,12 @@ int main(int argc, char **argv) {
 		tmp[1] = size;
 
 		uall = (double *) calloc(size*size, sizeof(double));
+
+		for (n=0; n<numInit; n++) {
+			ok = fscanf(fp, "%d%d%lf", &i, &j, &inTemp);
+			dataAt(uall, i, j, size) = inTemp;
+		}
+		fclose(fp);
 	}
 
 	MPI_Bcast(tmp, 2, MPI_INT, 0, MPI_COMM_WORLD);
@@ -80,25 +82,27 @@ int main(int argc, char **argv) {
 
 	MPI_Dims_create(num_procs, 2, dims);
 
-    all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
-    all_offsets = (int *) calloc(dims[0]*dims[1], sizeof(int));
-
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &CART_COMM);
 	MPI_Cart_coords(CART_COMM, my_rank, 2, my_coord);
 
 	type = (my_coord[0] + my_coord[1])%2;
 
-	for (i=0; i < dims[0]; i++){
-		for(j=0; j < dims[1]; j++) {
-			all_sizes[i*dims[1]+j] = 1;
-			all_offsets[i*dims[1]+j] = find_pos(i, dims[0], size) * size + find_pos(j, dims[1], size);
+	if (0 == my_rank) {
+		// all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
+	    all_offsets = (int *) calloc(dims[0]*dims[1], sizeof(int));
+
+		for (i=0; i < dims[0]; i++){
+			for(j=0; j < dims[1]; j++) {
+				// all_sizes[i*dims[1]+j] = 1;
+				all_offsets[i*dims[1]+j] = find_pos(i, dims[0], size) * size + find_pos(j, dims[1], size);
+			}
 		}
 	}
 
-	// if(DEBUG) {
-	// 	printf("my rank %i, my coords %i, %i, my offset %i\n", my_rank, my_coord[0], my_coord[1], all_offsets[my_rank]);
-	// 	MPI_Barrier(CART_COMM);
-	// }
+	if(DEBUG) {
+		printf("my rank %i, my coords %i, %i, my offset %i\n", my_rank, my_coord[0], my_coord[1], all_offsets[my_rank]);
+		MPI_Barrier(CART_COMM);
+	}
 
 	// find neighbors
 	MPI_Cart_shift(CART_COMM, 0,  1, &N_rank, &S_rank);
@@ -121,22 +125,14 @@ int main(int argc, char **argv) {
 	MPI_Type_vector(my_size[0], my_size[1], my_size[1]+2, MPI_DOUBLE, &MID_DOUBLE);
 	MPI_Type_commit(&MID_DOUBLE);
 
-
-	if (0 == my_rank) {
-		for (n=0; n<numInit; n++) {
-			ok = fscanf(fp, "%d%d%lf", &i, &j, &inTemp);
-			dataAt(uall, i, j, size) = inTemp;
-		}
+	if(DEBUG && 0 == my_rank) {
+		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+		mpPrintGrid(uall, size, size);
 	}
-
-	// if(DEBUG && 0 == my_rank) {
-	// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-	// 	mpPrintGrid(uall, size, size);
-	// }
 
 	uold = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
-	//MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
+	// MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
 
 	for (i=0; i < dims[0]; i++){
 		for (j=0; j < dims[1]; j++){
@@ -144,12 +140,12 @@ int main(int argc, char **argv) {
 			tmp[1] = j;
 			MPI_Cart_rank(CART_COMM, tmp, &k);
 
-			// if(DEBUG) {
-			// 	if (0 == my_rank){
-			// 		printf("dest rank %i, offset %i\n", k, all_offsets[k]);
-			// 	}
-			// 	MPI_Barrier(CART_COMM);
-			// }
+			if(DEBUG) {
+				if (0 == my_rank){
+					printf("dest rank %i, offset %i\n", k, all_offsets[k]);
+				}
+				MPI_Barrier(CART_COMM);
+			}
 
 			if (0 == k && 0 == my_rank)
 				MPI_Sendrecv(uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, 
@@ -165,11 +161,11 @@ int main(int argc, char **argv) {
 
 	unew = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
-	// if(DEBUG) {
-	// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-	// 	mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
-	// 	MPI_Barrier(CART_COMM);
-	// }
+	if(DEBUG) {
+		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+		mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
+		MPI_Barrier(CART_COMM);
+	}
 
 	// set up bounds
 	start[0] = 1;
@@ -182,7 +178,7 @@ int main(int argc, char **argv) {
 	if (my_coord[1] == 0) start[1]++;
 	if (my_coord[1] == dims[1]-1) stop[1]--;
 
-	// printGrid(uold, size);
+	MPI_Barrier(CART_COMM);
 
 	for (cycle=0; cycle<numCycles; cycle++) {
 		if (0 == my_rank && 0 == cycle%PRINT_CYCLES)
@@ -229,12 +225,14 @@ int main(int argc, char **argv) {
 		t[0] += t_t1 - t_t0;
 		t[1] += t_t2 - t_t1;
 
-		// if(DEBUG) {
-		// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-		// 	mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
-		// 	MPI_Barrier(CART_COMM);
-		// }
+		if(DEBUG) {
+			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+			mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
+			MPI_Barrier(CART_COMM);
+		}
 	}
+
+	MPI_Barrier(CART_COMM);
 
 	t_t0 = MPI_Wtime();
 
@@ -244,7 +242,7 @@ int main(int argc, char **argv) {
 
 	t_t1 = MPI_Wtime();
 
-	//MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
+	// MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
 
 	for (i=0; i < dims[0]; i++){
 		for (j=0; j < dims[1]; j++){
@@ -269,19 +267,22 @@ int main(int argc, char **argv) {
 
 	MPI_Reduce(t, tr, 4, MPI_DOUBLE, MPI_SUM, 0, CART_COMM);
 
-	if(DEBUG && 0 == my_rank) {
-		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-		mpPrintGrid(uall, size, size);
-	}
-
 	if (0 == my_rank) {
+		if(DEBUG) {
+			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+			mpPrintGrid(uall, size, size);
+		}
+
 		for(i=1;i<4;i++)
 			t[i] = tr[i] / (double)num_procs;
 
 		printf("results for size %i test with %i cycles %i num procs\n", size, numCycles, num_procs);
 		printf("total time %.9lf\n", t[0]+t[1]+t[2]+t[3]);
 		printf("communication, computation, gather (mem, comm)\n%.9lf\n%.9lf\n%.9lf (%.9lf, %.9lf)\n", t[0], t[1], t[2]+t[3], t[2], t[3]);
+		
 		// dumpGrid(uall, size);
+		
+		checkGrid(argc, argv, uall);
 	}
 
 	MPI_Type_free(&COL_DOUBLE);
