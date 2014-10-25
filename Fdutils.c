@@ -37,6 +37,17 @@ void printGrid(double g[], int w) {
   }
 }
 
+void mpPrintGrid(double g[], int h, int w) {
+  int i, j;
+
+  for (i=0; i<h; i++) {
+    for (j=0; j<w; j++) {
+      printf("%7.3f ", dataAt(g, i, j, w));
+    }
+    printf("\n");
+  }
+}
+
 void dumpGrid(double g[], int w) {
   int i, j;
   FILE *fp;
