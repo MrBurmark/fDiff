@@ -1,7 +1,7 @@
 /*************************
 Author: Rachel Beasley, Jason Burmark, Moses Lee
 COMPILE: mpicc mpFdiff.c Fdutils.c -O3 -o mpFd -lm
-EXECUTE: mpirun -n [number of nodes] ./mpFd [input file]
+RUN: mpirun -n [number of nodes] ./mpFd [input file]
 
 Performs 4 nearest neighbor updates on 2-D grid
 Input file format:
@@ -18,6 +18,10 @@ size of grid (including boundary)
 #include <mpi.h>
 #include "Fdiff.h"
 
+#define DEBUG 0
+#define PRINT_CYCLES 2
+#define COMM_COMP_RATIO 1000.0
+
 // less likely to overflow
 int find_pos(int i, int P, int N) {
 	return i * (N / P) + i * (N % P) / P;
@@ -26,13 +30,16 @@ int find_pos(int i, int P, int N) {
 int main(int argc, char **argv) {
 	int size, my_size[2];
 	int numCycles;
+	int type;
 	int i, j, k, l, n;
+	int start[2], stop[2];
 	int ok, tag=0;
 	int num_procs, my_rank, my_coord[2];
 	int S_rank, N_rank, E_rank, W_rank;
 	int tmp[2], dims[2] = {0,0}, periods[2] = {0,0};
 	int *all_sizes, *all_offsets;
 	double *uall, *uold, *unew, *tptr;
+	double t[4] = {0.0,0.0,0.0,0.0}, tr[4], t_t0, t_t1, t_t2;
 	double inTemp;
 	int cycle = 0; // tag with cycle, but message order per other processor should be fixed
 	int numInit;
@@ -53,7 +60,7 @@ int main(int argc, char **argv) {
 		ok = fscanf(fp, "%d", &numCycles);
 		ok = fscanf(fp, "%d", &size);
 		ok = fscanf(fp, "%d", &numInit);
-		printf("# cycles %d size %d # initializations %d\n", numCycles, size, numInit);
+		printf("# cycles %d size %d # initializations %d # procs %d\n", numCycles, size, numInit, num_procs);
 		tmp[0] = numCycles;
 		tmp[1] = size;
 
@@ -76,20 +83,22 @@ int main(int argc, char **argv) {
     all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
     all_offsets = (int *) calloc(dims[0]*dims[1], sizeof(int));
 
-	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 0, &CART_COMM);
+	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &CART_COMM);
 	MPI_Cart_coords(CART_COMM, my_rank, 2, my_coord);
+
+	type = (my_coord[0] + my_coord[1])%2;
 
 	for (i=0; i < dims[0]; i++){
 		for(j=0; j < dims[1]; j++) {
 			all_sizes[i*dims[1]+j] = 1;
 			all_offsets[i*dims[1]+j] = find_pos(i, dims[0], size) * size + find_pos(j, dims[1], size);
 		}
-    }
-
-	if(DEBUG) {
-		printf("my rank %i, my coords %i, %i, my offset %i\n", my_rank, my_coord[0], my_coord[1], all_offsets[my_rank]);
-		MPI_Barrier(CART_COMM);
 	}
+
+	// if(DEBUG) {
+	// 	printf("my rank %i, my coords %i, %i, my offset %i\n", my_rank, my_coord[0], my_coord[1], all_offsets[my_rank]);
+	// 	MPI_Barrier(CART_COMM);
+	// }
 
 	// find neighbors
 	MPI_Cart_shift(CART_COMM, 0,  1, &N_rank, &S_rank);
@@ -120,10 +129,10 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	if(DEBUG && 0 == my_rank) {
-		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-		mpPrintGrid(uall, size, size);
-	}
+	// if(DEBUG && 0 == my_rank) {
+	// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+	// 	mpPrintGrid(uall, size, size);
+	// }
 
 	uold = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
@@ -135,12 +144,12 @@ int main(int argc, char **argv) {
 			tmp[1] = j;
 			MPI_Cart_rank(CART_COMM, tmp, &k);
 
-			if(DEBUG) {
-				if (0 == my_rank){
-					printf("dest rank %i, offset %i\n", k, all_offsets[k]);
-				}
-				MPI_Barrier(CART_COMM);
-			}
+			// if(DEBUG) {
+			// 	if (0 == my_rank){
+			// 		printf("dest rank %i, offset %i\n", k, all_offsets[k]);
+			// 	}
+			// 	MPI_Barrier(CART_COMM);
+			// }
 
 			if (0 == k && 0 == my_rank)
 				MPI_Sendrecv(uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, 
@@ -156,48 +165,84 @@ int main(int argc, char **argv) {
 
 	unew = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
-	if(DEBUG) {
-		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
-		mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
-		MPI_Barrier(CART_COMM);
-	}
-
-
-
-
-
-
-
-
-
-
-
-	
-
-  //printGrid(u1, size);
-
-	// for (cycle=0; cycle<numCycles; cycle++) {
-	// sendrecv
-	// 	updateGrid(unew, uold, size); // mp it
-	// //printGrid(unew, size);
-	// 	tptr = unew;
-	// 	unew = uold;
-	// 	uold = tptr;
+	// if(DEBUG) {
+	// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+	// 	mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
+	// 	MPI_Barrier(CART_COMM);
 	// }
 
+	// set up bounds
+	start[0] = 1;
+	start[1] = 1;
+	stop[0] = my_size[0]+1;
+	stop[1] = my_size[1]+1;
 
+	if (my_coord[0] == 0) start[0]++;
+	if (my_coord[0] == dims[0]-1) stop[0]--;
+	if (my_coord[1] == 0) start[1]++;
+	if (my_coord[1] == dims[1]-1) stop[1]--;
 
+	// printGrid(uold, size);
 
+	for (cycle=0; cycle<numCycles; cycle++) {
+		if (0 == my_rank && 0 == cycle%PRINT_CYCLES)
+			printf("cycle %i\n", cycle);
 
+		t_t0 = MPI_Wtime();
 
+		if (0 == type) { // E W N S
+			MPI_Sendrecv(uold+2*my_size[1]+2, 1, COL_DOUBLE, E_rank, cycle,
+						 uold+2*my_size[1]+3, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &status);
 
+			MPI_Sendrecv(uold+my_size[1]+3, 1, COL_DOUBLE, W_rank, cycle,
+						 uold+my_size[1]+2, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &status);
 
+			MPI_Sendrecv(uold+my_size[1]+3, my_size[1], MPI_DOUBLE, N_rank, cycle,
+						 uold+           1, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &status);
 
+			MPI_Sendrecv(uold+(my_size[0])  *(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle,
+						 uold+(my_size[0]+1)*(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &status);
+		} else { // W E S N
+			MPI_Sendrecv(uold+my_size[1]+3, 1, COL_DOUBLE, W_rank, cycle,
+						 uold+my_size[1]+2, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &status);
 
+			MPI_Sendrecv(uold+2*my_size[1]+2, 1, COL_DOUBLE, E_rank, cycle,
+						 uold+2*my_size[1]+3, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &status);
+
+			MPI_Sendrecv(uold+(my_size[0])  *(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle,
+						 uold+(my_size[0]+1)*(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &status);
+
+			MPI_Sendrecv(uold+my_size[1]+3, my_size[1], MPI_DOUBLE, N_rank, cycle,
+						 uold+           1, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &status);
+		}
+
+		t_t1 = MPI_Wtime();
+
+		mpUpdateGrid(unew, uold, my_size[1]+2, start[0], stop[0], start[1], stop[1]);
+		
+		tptr = unew;
+		unew = uold;
+		uold = tptr;
+
+		t_t2 = MPI_Wtime();
+
+		t[0] += t_t1 - t_t0;
+		t[1] += t_t2 - t_t1;
+
+		// if(DEBUG) {
+		// 	printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+		// 	mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
+		// 	MPI_Barrier(CART_COMM);
+		// }
+	}
+
+	t_t0 = MPI_Wtime();
 
 	free(unew);
 
 	if (0 == my_rank) uall = (double *) calloc(size*size, sizeof(double));
+
+	t_t1 = MPI_Wtime();
 
 	//MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
 
@@ -217,13 +262,27 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	t_t2 = MPI_Wtime();
+
+	t[2] += t_t1 - t_t0;
+	t[3] += t_t2 - t_t1;
+
+	MPI_Reduce(t, tr, 4, MPI_DOUBLE, MPI_SUM, 0, CART_COMM);
+
 	if(DEBUG && 0 == my_rank) {
 		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
 		mpPrintGrid(uall, size, size);
 	}
 
-	if (0 == my_rank)
-		dumpGrid(uall, size);
+	if (0 == my_rank) {
+		for(i=1;i<4;i++)
+			t[i] = tr[i] / (double)num_procs;
+
+		printf("results for size %i test with %i cycles %i num procs\n", size, numCycles, num_procs);
+		printf("total time %.9lf\n", t[0]+t[1]+t[2]+t[3]);
+		printf("communication, computation, gather (mem, comm)\n%.9lf\n%.9lf\n%.9lf (%.9lf, %.9lf)\n", t[0], t[1], t[2]+t[3], t[2], t[3]);
+		// dumpGrid(uall, size);
+	}
 
 	MPI_Type_free(&COL_DOUBLE);
 	MPI_Type_free(&BLOCK_DOUBLE);

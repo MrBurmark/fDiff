@@ -3,74 +3,88 @@
 
 /****
 
-     tu[] is input grid
-     u[] is output grid
-     w is width of grid
+	 tu[] is input grid
+	 u[] is output grid
+	 w is width of grid
 
-     compute 4-nearest neighbor updates 
+	 compute 4-nearest neighbor updates 
 
 ****/
 
-void updateGrid(double u[], double tu[], int w) {
-  int i, j;
-  double uv2;
+	void updateGrid(double u[], double tu[], int w) {
+	 	int i, j;
+	 	double uv2;
 
-  for (i=1; i<w-1; i++) {
-    for (j=1; j<w-1; j++) {
+	 	for (i=1; i<w-1; i++) {
+	 		for (j=1; j<w-1; j++) {
 
-      dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
-				  + dataAt(tu, i-1, j, w)
-				  + dataAt(tu, i, j+1, w)
-				  + dataAt(tu, i, j-1, w));
-    }
-  }
-}
+	 			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+	 				+ dataAt(tu, i-1, j, w)
+	 				+ dataAt(tu, i, j+1, w)
+	 				+ dataAt(tu, i, j-1, w));
+	 		}
+	 	}
+	}
 
-void printGrid(double g[], int w) {
-  int i, j;
+	void mpUpdateGrid(double u[], double tu[], int w, int start0, int stop0, int start1, int stop1) {
+	 	int i, j;
 
-  for (i=0; i<w; i++) {
-    for (j=0; j<w; j++) {
-      printf("%7.3f ", dataAt(g, i, j, w));
-    }
-    printf("\n");
-  }
-}
+	 	for (i=start0; i < stop0; i++) {
+	 		for (j=start1; j < stop1; j++) {
 
-void mpPrintGrid(double g[], int h, int w) {
-  int i, j;
+	 			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+	 				+ dataAt(tu, i-1, j, w)
+	 				+ dataAt(tu, i, j+1, w)
+	 				+ dataAt(tu, i, j-1, w));
+	 		}
+	 	}
+	}
 
-  for (i=0; i<h; i++) {
-    for (j=0; j<w; j++) {
-      printf("%7.3f ", dataAt(g, i, j, w));
-    }
-    printf("\n");
-  }
-}
+	void printGrid(double g[], int w) {
+	 	int i, j;
 
-void dumpGrid(double g[], int w) {
-  int i, j;
-  FILE *fp;
+	 	for (i=0; i<w; i++) {
+	 		for (j=0; j<w; j++) {
+	 			printf("%7.3f ", dataAt(g, i, j, w));
+	 		}
+	 		printf("\n");
+	 	}
+	}
 
-  fp = fopen("dump.out", "w");
-  
-  for (i=0; i<w; i++) {
-    for (j=0; j<w; j++) {
-      fprintf(fp, "%f ", dataAt(g, i, j, w));
-    }
-    fprintf(fp, "\n");
-  }
-  fclose(fp);
-}
+	void mpPrintGrid(double g[], int h, int w) {
+	 	int i, j;
 
-void initGrid(double u0[], double u1[], int w) {
-  int i, j;
+	 	for (i=0; i<h; i++) {
+	 		for (j=0; j<w; j++) {
+	 			printf("%7.3f ", dataAt(g, i, j, w));
+	 		}
+	 		printf("\n");
+	 	}
+	}
 
-  for (i=0; i<w; i++) {
-    for (j=0; j<w; j++) {
-      dataAt(u0, i, j, w) = 0.;
-      dataAt(u1, i, j, w) = 0.;
-    }
-  }
-}
+	void dumpGrid(double g[], int w) {
+	 	int i, j;
+	 	FILE *fp;
+
+	 	fp = fopen("dump.out", "w");
+
+	 	for (i=0; i<w; i++) {
+	 		for (j=0; j<w; j++) {
+	 			fprintf(fp, "%f ", dataAt(g, i, j, w));
+	 		}
+	 		fprintf(fp, "\n");
+	 	}
+	 	fclose(fp);
+	}
+
+	void initGrid(double u0[], double u1[], int w) {
+	 	int i, j;
+
+	 	for (i=0; i<w; i++) {
+	 		for (j=0; j<w; j++) {
+	 			dataAt(u0, i, j, w) = 0.;
+	 			dataAt(u1, i, j, w) = 0.;
+	 		}
+	 	}
+	}
 
