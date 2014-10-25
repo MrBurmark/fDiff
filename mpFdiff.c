@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 	int ok, tag=0;
 	int num_procs, my_rank, my_coord[2];
 	int S_rank, N_rank, E_rank, W_rank;
-	int tmp[2], dims[2], periods[2] = {0,0};
+	int tmp[2], dims[2] = {0,0}, periods[2] = {0,0};
 	int *all_sizes, *all_offsets;
 	double *uall, *uold, *unew, *tptr;
 	double inTemp;
@@ -66,12 +66,12 @@ int main(int argc, char **argv) {
 	size = tmp[1];
 
 	// consider non-square case, create most square blocks possible to reduce communication
-	dims[0] = 1;
-	dims[1] = 1;
-	while (dims[0]*dims[1] < num_procs) dims[0]++,dims[1]++;
-	if (dims[0]*dims[1] > num_procs) dims[0]--,dims[1]--;
+	// dims[0] = 1;
+	// dims[1] = 1;
+	// while (dims[0]*dims[1] < num_procs) dims[0]++,dims[1]++;
+	// if (dims[0]*dims[1] > num_procs) dims[0]--,dims[1]--;
 
-	// MPI_Dims_create(num_procs, 2, dims);
+	MPI_Dims_create(num_procs, 2, dims);
 
     all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
     all_offsets = (int *) calloc(dims[0]*dims[1], sizeof(int));
