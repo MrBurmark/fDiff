@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
 		for (i=0; i < dims[0]; i++){
 			for(j=0; j < dims[1]; j++) {
 				all_sizes[i*dims[1]+j] = 1;
-				all_offsets[i*dims[1]+j] = find_pos(i, dims[0], calc_size) * calc_size + find_pos(j, dims[1], calc_size);
+				all_offsets[i*dims[1]+j] = (find_pos(i, dims[0], calc_size) + 1) * size + find_pos(j, dims[1], calc_size) + 1;
 			}
 		}
 	}
