@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	int i, j, k, l, n;
 	int start[2], stop[2];
 	int ok, tag=0;
-	int num_procs, my_rank, my_coord[2];
+	int num_procs, my_rank, their_rank, my_coord[2], their_coords[2];
 	int S_rank, N_rank, E_rank, W_rank;
 	int tmp[2], dims[2] = {0,0}, periods[2] = {0,0};
 	int *all_sizes, *all_offsets;
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 
 	MPI_Dims_create(num_procs, 2, dims);
 
-	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 0, &CART_COMM);
+	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &CART_COMM);
 	MPI_Cart_coords(CART_COMM, my_rank, 2, my_coord);
 
 	// break grid up so neighbors of opposite types
@@ -103,8 +103,14 @@ int main(int argc, char **argv) {
 
 		for (i=0; i < dims[0]; i++){
 			for(j=0; j < dims[1]; j++) {
-				all_sizes[i*dims[1]+j] = 1;
-				all_offsets[i*dims[1]+j] = (find_pos(i, dims[0], calc_size) + 1) * size + find_pos(j, dims[1], calc_size) + 1;
+
+				their_coords[0] = i;
+				their_coords[1] = j;
+
+				MPI_Cart_rank(CART_COMM, their_coords, &their_rank);
+
+				all_sizes[their_rank] = 1;
+				all_offsets[their_rank] = (find_pos(i, dims[0], calc_size) + 1) * size + find_pos(j, dims[1], calc_size) + 1;
 			}
 		}
 	}
