@@ -16,10 +16,13 @@ size of grid (including boundary)
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+#include "prt_time.h"
 #include "Fdiff.h"
 
 // less likely to overflow
 int find_pos(int i, int P, int N) {
+	if (i == P) return N;
+	else if (0 == i) return 0;
 	return i * (N / P) + i * (N % P) / P;
 }
 
@@ -51,6 +54,8 @@ int main(int argc, char **argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
 	if (0 == my_rank) {
+		prt_time();
+
 		fp = fopen(argv[1], "r");
 
 		ok = fscanf(fp, "%d", &numCycles);
@@ -295,6 +300,7 @@ int main(int argc, char **argv) {
 		// dumpGrid(uall, size);
 		
 		checkGrid(argc, argv, uall);
+		prt_time();
 	}
 
 	MPI_Type_free(&COL_DOUBLE);
