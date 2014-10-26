@@ -24,7 +24,7 @@ int find_pos(int i, int P, int N) {
 }
 
 int main(int argc, char **argv) {
-	int size, my_size[2];
+	int size, calc_size, my_size[2];
 	int numCycles;
 	int my_type;
 	int i, j, k, l, n;
@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
 
 	numCycles = tmp[0];
 	size = tmp[1];
+	calc_size = size - 2;
 
 	// consider non-square case, create most square blocks possible to reduce communication
 	// dims[0] = 1;
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
 		for (i=0; i < dims[0]; i++){
 			for(j=0; j < dims[1]; j++) {
 				all_sizes[i*dims[1]+j] = 1;
-				all_offsets[i*dims[1]+j] = find_pos(i, dims[0], size) * size + find_pos(j, dims[1], size);
+				all_offsets[i*dims[1]+j] = find_pos(i, dims[0], calc_size) * calc_size + find_pos(j, dims[1], calc_size);
 			}
 		}
 	}
@@ -113,10 +114,10 @@ int main(int argc, char **argv) {
 	MPI_Cart_shift(CART_COMM, 1,  1, &W_rank, &E_rank);
 
 	// consider giving edges more computations as they have fewer sendrecv
-	my_size[0] = find_pos(my_coord[0]+1, dims[0], size) - find_pos(my_coord[0], dims[0], size);
-	my_size[1] = find_pos(my_coord[1]+1, dims[1], size) - find_pos(my_coord[1], dims[1], size);
+	my_size[0] = find_pos(my_coord[0]+1, dims[0], calc_size) - find_pos(my_coord[0], dims[0], calc_size);
+	my_size[1] = find_pos(my_coord[1]+1, dims[1], calc_size) - find_pos(my_coord[1], dims[1], calc_size);
 
-	if(DEBUG || 1) {
+	if(DEBUG) {
 		printf("my rank %i, my coords %i, %i, my sizes %ix%i\n", my_rank, my_coord[0], my_coord[1], my_size[0], my_size[1]);
 		MPI_Barrier(CART_COMM);
 	}
@@ -184,10 +185,10 @@ int main(int argc, char **argv) {
 	stop[0] = my_size[0]+1;
 	stop[1] = my_size[1]+1;
 
-	if (my_coord[0] == 0) start[0]++;
-	if (my_coord[0] == dims[0]-1) stop[0]--;
-	if (my_coord[1] == 0) start[1]++;
-	if (my_coord[1] == dims[1]-1) stop[1]--;
+	// if (my_coord[0] == 0) start[0]++;
+	// if (my_coord[0] == dims[0]-1) stop[0]--;
+	// if (my_coord[1] == 0) start[1]++;
+	// if (my_coord[1] == dims[1]-1) stop[1]--;
 
 	MPI_Barrier(CART_COMM);
 
