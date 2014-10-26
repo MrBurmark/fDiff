@@ -126,7 +126,7 @@ int checkGrid(int argc, char **argv, double* uall) {
 	for (i=0; i<width; i++) {
 		for (j=0; j<width; j++) {
 			diff = dataAt(u1, i, j, width) - dataAt(uall, i, j, width);
-			if (fabs(diff) > THRESHOLD){
+			if (fabs(diff) > THRESHOLD || isnan(diff)){
 				ok == 0;
 				if (DEBUG)
 					printf("Error at %i, %i: difference of %.9lf\n", i, j, diff);

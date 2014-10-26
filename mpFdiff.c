@@ -26,7 +26,7 @@ int find_pos(int i, int P, int N) {
 int main(int argc, char **argv) {
 	int size, my_size[2];
 	int numCycles;
-	int type;
+	int my_type;
 	int i, j, k, l, n;
 	int start[2], stop[2];
 	int ok, tag=0;
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 	int numInit;
 	MPI_Status status;
 	MPI_Comm CART_COMM;
-	MPI_Datatype COL_DOUBLE, BLOCK_DOUBLE, MID_DOUBLE;
+	MPI_Datatype COL_DOUBLE, TMP_BLOCK_DOUBLE, BLOCK_DOUBLE, MID_DOUBLE;
 
 	FILE *fp;
 
@@ -82,25 +82,29 @@ int main(int argc, char **argv) {
 
 	MPI_Dims_create(num_procs, 2, dims);
 
-	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &CART_COMM);
+	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 0, &CART_COMM);
 	MPI_Cart_coords(CART_COMM, my_rank, 2, my_coord);
 
-	type = (my_coord[0] + my_coord[1])%2;
+	// break grid up so neighbors of opposite types
+	// allows matching sends and recieves in proper order
+	my_type = (my_coord[0] + my_coord[1])%2;
 
 	if (0 == my_rank) {
-		// all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
+		printf("Using %ix%i cartesian grid\n", dims[0], dims[1]);
+
+		all_sizes = (int *) calloc(dims[0]*dims[1], sizeof(int));
 	    all_offsets = (int *) calloc(dims[0]*dims[1], sizeof(int));
 
 		for (i=0; i < dims[0]; i++){
 			for(j=0; j < dims[1]; j++) {
-				// all_sizes[i*dims[1]+j] = 1;
+				all_sizes[i*dims[1]+j] = 1;
 				all_offsets[i*dims[1]+j] = find_pos(i, dims[0], size) * size + find_pos(j, dims[1], size);
 			}
 		}
 	}
 
 	if(DEBUG) {
-		printf("my rank %i, my coords %i, %i, my offset %i\n", my_rank, my_coord[0], my_coord[1], all_offsets[my_rank]);
+		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
 		MPI_Barrier(CART_COMM);
 	}
 
@@ -112,6 +116,11 @@ int main(int argc, char **argv) {
 	my_size[0] = find_pos(my_coord[0]+1, dims[0], size) - find_pos(my_coord[0], dims[0], size);
 	my_size[1] = find_pos(my_coord[1]+1, dims[1], size) - find_pos(my_coord[1], dims[1], size);
 
+	if(DEBUG || 1) {
+		printf("my rank %i, my coords %i, %i, my sizes %ix%i\n", my_rank, my_coord[0], my_coord[1], my_size[0], my_size[1]);
+		MPI_Barrier(CART_COMM);
+	}
+
 	// may be different sizes for different processors
 	// horizontal neighbors should have same height
 	// take halo into account with + 2
@@ -119,8 +128,10 @@ int main(int argc, char **argv) {
 	MPI_Type_vector(my_size[0],          1, my_size[1]+2, MPI_DOUBLE, &COL_DOUBLE);
 	MPI_Type_commit(&COL_DOUBLE);
 
-	MPI_Type_vector(my_size[0], my_size[1],         size, MPI_DOUBLE, &BLOCK_DOUBLE);
+	MPI_Type_vector(my_size[0], my_size[1],         size, MPI_DOUBLE, &TMP_BLOCK_DOUBLE);
+	MPI_Type_create_resized(TMP_BLOCK_DOUBLE, 0, sizeof(double), &BLOCK_DOUBLE);
 	MPI_Type_commit(&BLOCK_DOUBLE);
+	MPI_Type_free(&TMP_BLOCK_DOUBLE);
 
 	MPI_Type_vector(my_size[0], my_size[1], my_size[1]+2, MPI_DOUBLE, &MID_DOUBLE);
 	MPI_Type_commit(&MID_DOUBLE);
@@ -132,30 +143,30 @@ int main(int argc, char **argv) {
 
 	uold = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
-	// MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
+	MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
 
-	for (i=0; i < dims[0]; i++){
-		for (j=0; j < dims[1]; j++){
-			tmp[0] = i;
-			tmp[1] = j;
-			MPI_Cart_rank(CART_COMM, tmp, &k);
+	// for (i=0; i < dims[0]; i++){
+	// 	for (j=0; j < dims[1]; j++){
+	// 		tmp[0] = i;
+	// 		tmp[1] = j;
+	// 		MPI_Cart_rank(CART_COMM, tmp, &k);
 
-			if(DEBUG) {
-				if (0 == my_rank){
-					printf("dest rank %i, offset %i\n", k, all_offsets[k]);
-				}
-				MPI_Barrier(CART_COMM);
-			}
+	// 		if(DEBUG) {
+	// 			if (0 == my_rank){
+	// 				printf("dest rank %i, offset %i\n", k, all_offsets[k]);
+	// 			}
+	// 			MPI_Barrier(CART_COMM);
+	// 		}
 
-			if (0 == k && 0 == my_rank)
-				MPI_Sendrecv(uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, 
-					uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
-			else if (0 == my_rank)
-				MPI_Send(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM);
-			else if (k == my_rank)
-				MPI_Recv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
-		}
-	}
+	// 		if (0 == k && 0 == my_rank)
+	// 			MPI_Sendrecv(uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, 
+	// 				uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
+	// 		else if (0 == my_rank)
+	// 			MPI_Send(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM);
+	// 		else if (k == my_rank)
+	// 			MPI_Recv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
+	// 	}
+	// }
 
 	if (0 == my_rank) free(uall);
 
@@ -186,7 +197,7 @@ int main(int argc, char **argv) {
 
 		t_t0 = MPI_Wtime();
 
-		if (0 == type) { // E W N S
+		if (0 == my_type) { // E W N S
 			MPI_Sendrecv(uold+2*my_size[1]+2, 1, COL_DOUBLE, E_rank, cycle,
 						 uold+2*my_size[1]+3, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &status);
 
@@ -242,23 +253,23 @@ int main(int argc, char **argv) {
 
 	t_t1 = MPI_Wtime();
 
-	// MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
+	MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
 
-	for (i=0; i < dims[0]; i++){
-		for (j=0; j < dims[1]; j++){
-			tmp[0] = i;
-			tmp[1] = j;
-			MPI_Cart_rank(CART_COMM, tmp, &k);
+	// for (i=0; i < dims[0]; i++){
+	// 	for (j=0; j < dims[1]; j++){
+	// 		tmp[0] = i;
+	// 		tmp[1] = j;
+	// 		MPI_Cart_rank(CART_COMM, tmp, &k);
 
-			if (0 == k && 0 == my_rank)
-				MPI_Sendrecv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, 
-					uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, CART_COMM, &status);
-			else if (k == my_rank)
-				MPI_Send(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM);
-			else if (0 == my_rank)
-				MPI_Recv(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM, &status);
-		}
-	}
+	// 		if (0 == k && 0 == my_rank)
+	// 			MPI_Sendrecv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, 
+	// 				uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, CART_COMM, &status);
+	// 		else if (k == my_rank)
+	// 			MPI_Send(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM);
+	// 		else if (0 == my_rank)
+	// 			MPI_Recv(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM, &status);
+	// 	}
+	// }
 
 	t_t2 = MPI_Wtime();
 
