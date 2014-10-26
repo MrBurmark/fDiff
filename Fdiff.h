@@ -1,7 +1,7 @@
 #ifndef _FDIFF_H_
 #define _FDIFF_H_
 
-#define DEBUG 1
+#define DEBUG 0
 #define PRINT_CYCLES 2
 #define COMM_COMP_RATIO 1.0e3
 #define THRESHOLD 1.0e-6
