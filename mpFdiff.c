@@ -38,11 +38,12 @@ int main(int argc, char **argv) {
 	int tmp[2], dims[2] = {0,0}, periods[2] = {0,0};
 	int *all_sizes, *all_offsets;
 	double *uall, *uold, *unew, *tptr;
-	double t[4] = {0.0,0.0,0.0,0.0}, tr[4], t_t0, t_t1, t_t2;
+	double t[4] = {0.0,0.0,0.0,0.0}, tr[4], t_t0, t_t1, t_t2, t_t3, t_t4;
 	double inTemp;
 	int cycle = 0; // tag with cycle, but message order per other processor should be fixed
 	int numInit;
 	MPI_Status status;
+	MPI_Request request[8];
 	MPI_Comm CART_COMM;
 	MPI_Datatype COL_DOUBLE, TMP_BLOCK_DOUBLE, BLOCK_DOUBLE, MID_DOUBLE;
 
@@ -72,6 +73,11 @@ int main(int argc, char **argv) {
 			dataAt(uall, i, j, size) = inTemp;
 		}
 		fclose(fp);
+#if BLOCKING
+		printf("Using blocking sends and receives\n");
+#else
+		printf("Using non-blocking sends and receives\n");
+#endif
 	}
 
 	MPI_Bcast(tmp, 2, MPI_INT, 0, MPI_COMM_WORLD);
@@ -79,12 +85,6 @@ int main(int argc, char **argv) {
 	numCycles = tmp[0];
 	size = tmp[1];
 	calc_size = size - 2;
-
-	// consider non-square case, create most square blocks possible to reduce communication
-	// dims[0] = 1;
-	// dims[1] = 1;
-	// while (dims[0]*dims[1] < num_procs) dims[0]++,dims[1]++;
-	// if (dims[0]*dims[1] > num_procs) dims[0]--,dims[1]--;
 
 	MPI_Dims_create(num_procs, 2, dims);
 
@@ -137,9 +137,6 @@ int main(int argc, char **argv) {
 	// horizontal neighbors should have same height
 	// take halo into account with + 2
 	// allows sending the halo columns without manually copying
-	MPI_Type_vector(my_size[0],          1, my_size[1]+2, MPI_DOUBLE, &COL_DOUBLE);
-	MPI_Type_commit(&COL_DOUBLE);
-
 	MPI_Type_vector(my_size[0], my_size[1],         size, MPI_DOUBLE, &TMP_BLOCK_DOUBLE);
 	MPI_Type_create_resized(TMP_BLOCK_DOUBLE, 0, sizeof(double), &BLOCK_DOUBLE);
 	MPI_Type_commit(&BLOCK_DOUBLE);
@@ -148,6 +145,9 @@ int main(int argc, char **argv) {
 	MPI_Type_vector(my_size[0], my_size[1], my_size[1]+2, MPI_DOUBLE, &MID_DOUBLE);
 	MPI_Type_commit(&MID_DOUBLE);
 
+	MPI_Type_vector(my_size[0],          1, my_size[1]+2, MPI_DOUBLE, &COL_DOUBLE);
+	MPI_Type_commit(&COL_DOUBLE);
+
 	if(DEBUG && 0 == my_rank) {
 		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
 		mpPrintGrid(uall, size, size);
@@ -155,30 +155,8 @@ int main(int argc, char **argv) {
 
 	uold = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
-	MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
-
-	// for (i=0; i < dims[0]; i++){
-	// 	for (j=0; j < dims[1]; j++){
-	// 		tmp[0] = i;
-	// 		tmp[1] = j;
-	// 		MPI_Cart_rank(CART_COMM, tmp, &k);
-
-	// 		if(DEBUG) {
-	// 			if (0 == my_rank){
-	// 				printf("dest rank %i, offset %i\n", k, all_offsets[k]);
-	// 			}
-	// 			MPI_Barrier(CART_COMM);
-	// 		}
-
-	// 		if (0 == k && 0 == my_rank)
-	// 			MPI_Sendrecv(uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, 
-	// 				uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
-	// 		else if (0 == my_rank)
-	// 			MPI_Send(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM);
-	// 		else if (k == my_rank)
-	// 			MPI_Recv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM, &status);
-	// 	}
-	// }
+	MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, 
+				 uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
 
 	if (0 == my_rank) free(uall);
 
@@ -196,12 +174,9 @@ int main(int argc, char **argv) {
 	stop[0] = my_size[0]+1;
 	stop[1] = my_size[1]+1;
 
-	// if (my_coord[0] == 0) start[0]++;
-	// if (my_coord[0] == dims[0]-1) stop[0]--;
-	// if (my_coord[1] == 0) start[1]++;
-	// if (my_coord[1] == dims[1]-1) stop[1]--;
-
 	MPI_Barrier(CART_COMM);
+
+#if BLOCKING
 
 	for (cycle=0; cycle<numCycles; cycle++) {
 		if (0 == my_rank && 0 == cycle%PRINT_CYCLES)
@@ -255,6 +230,70 @@ int main(int argc, char **argv) {
 		}
 	}
 
+#else
+
+	for (cycle=0; cycle<numCycles; cycle++) {
+		if (0 == my_rank && 0 == cycle%PRINT_CYCLES)
+			printf("cycle %i\n", cycle);
+
+		t_t0 = MPI_Wtime();
+
+		if (0 == my_type) { // E W N S
+			MPI_Isend(uold+2*my_size[1]+2, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &request[4]);
+			MPI_Irecv(uold+2*my_size[1]+3, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &request[0]);
+
+			MPI_Isend(uold+my_size[1]+3, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &request[5]);
+			MPI_Irecv(uold+my_size[1]+2, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &request[1]);
+
+			MPI_Isend(uold+my_size[1]+3, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &request[6]);
+			MPI_Irecv(uold+           1, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &request[2]);
+
+			MPI_Isend(uold+(my_size[0])  *(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &request[7]);
+			MPI_Irecv(uold+(my_size[0]+1)*(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &request[3]);
+		} else { // W E S N
+			MPI_Irecv(uold+my_size[1]+2, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &request[4]);
+			MPI_Isend(uold+my_size[1]+3, 1, COL_DOUBLE, W_rank, cycle, CART_COMM, &request[0]);
+			
+			MPI_Irecv(uold+2*my_size[1]+3, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &request[5]);
+			MPI_Isend(uold+2*my_size[1]+2, 1, COL_DOUBLE, E_rank, cycle, CART_COMM, &request[1]);
+			
+			MPI_Irecv(uold+(my_size[0]+1)*(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &request[6]);
+			MPI_Isend(uold+(my_size[0])  *(my_size[1]+2)+1, my_size[1], MPI_DOUBLE, S_rank, cycle, CART_COMM, &request[2]);
+			
+			MPI_Irecv(uold+           1, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &request[7]);
+			MPI_Isend(uold+my_size[1]+3, my_size[1], MPI_DOUBLE, N_rank, cycle, CART_COMM, &request[3]);
+		}
+
+		t_t1 = MPI_Wtime();
+
+		mpUpdateGrid(unew, uold, my_size[1]+2, start[0]+1, stop[0]-1, start[1]+1, stop[1]-1);
+
+		t_t2 = MPI_Wtime();
+		
+		MPI_Waitall(8, request, MPI_STATUSES_IGNORE);
+
+		t_t3 = MPI_Wtime();
+
+		mpUpdateGridBorder(unew, uold, my_size[1]+2, start[0], stop[0], start[1], stop[1]);
+
+		tptr = unew;
+		unew = uold;
+		uold = tptr;
+
+		t_t4 = MPI_Wtime();
+
+		t[0] += (t_t1 - t_t0) + (t_t3 - t_t2);
+		t[1] += (t_t2 - t_t1) + (t_t4 - t_t3);
+
+		if(DEBUG) {
+			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+			mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
+			MPI_Barrier(CART_COMM);
+		}
+	}
+
+#endif
+
 	MPI_Barrier(CART_COMM);
 
 	t_t0 = MPI_Wtime();
@@ -265,23 +304,8 @@ int main(int argc, char **argv) {
 
 	t_t1 = MPI_Wtime();
 
-	MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
-
-	// for (i=0; i < dims[0]; i++){
-	// 	for (j=0; j < dims[1]; j++){
-	// 		tmp[0] = i;
-	// 		tmp[1] = j;
-	// 		MPI_Cart_rank(CART_COMM, tmp, &k);
-
-	// 		if (0 == k && 0 == my_rank)
-	// 			MPI_Sendrecv(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, 
-	// 				uall+all_offsets[k], 1, BLOCK_DOUBLE, 0, tag, CART_COMM, &status);
-	// 		else if (k == my_rank)
-	// 			MPI_Send(uold+my_size[1]+3, 1, MID_DOUBLE, 0, tag, CART_COMM);
-	// 		else if (0 == my_rank)
-	// 			MPI_Recv(uall+all_offsets[k], 1, BLOCK_DOUBLE, k, tag, CART_COMM, &status);
-	// 	}
-	// }
+	MPI_Gatherv(uold + my_size[1]+3, 1, MID_DOUBLE, 
+				uall, all_sizes, all_offsets, BLOCK_DOUBLE, 0, CART_COMM);
 
 	t_t2 = MPI_Wtime();
 
@@ -303,10 +327,11 @@ int main(int argc, char **argv) {
 		printf("total time %.9lf\n", t[0]+t[1]+t[2]+t[3]);
 		printf("communication, computation, gather (mem, comm)\n%.9lf\n%.9lf\n%.9lf (%.9lf, %.9lf)\n", t[0], t[1], t[2]+t[3], t[2], t[3]);
 		
+		prt_time();
+
 		// dumpGrid(uall, size);
 		
 		checkGrid(argc, argv, uall);
-		prt_time();
 	}
 
 	MPI_Type_free(&COL_DOUBLE);

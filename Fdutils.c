@@ -42,6 +42,60 @@ void mpUpdateGrid(double u[], double tu[], int w, int start0, int stop0, int sta
 	}
 }
 
+void mpUpdateGridBorder(double u[], double tu[], int w, int start0, int stop0, int start1, int stop1) {
+	int i, j;
+
+	if (start0 < stop0-1 && start1 < stop1-1) {
+		i = start0;
+		for (j=start1; j < stop1; j++) {
+
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+		j = stop1-1;
+		for (i=start0+1; i < stop0-1; i++) {
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+		j = start1;
+		for (i=start0+1; i < stop0-1; i++) {
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+		i = stop0-1;
+		for (j=start1; j < stop1; j++) {
+
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+	} else if (start0 == stop0-1) {
+		i = start0;
+		for (j=start1; j < stop1; j++) {
+
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+	} else if (start1 == stop1-1) {
+		j = start1;
+		for (i=start0; i < stop0; i++) {
+			dataAt(u, i, j, w) = .25 * (dataAt(tu, i+1, j, w)
+				+ dataAt(tu, i-1, j, w)
+				+ dataAt(tu, i, j+1, w)
+				+ dataAt(tu, i, j-1, w));
+		}
+	}
+}
+
 void printGrid(double g[], int w) {
 	int i, j;
 
@@ -93,7 +147,7 @@ void initGrid(double u0[], double u1[], int w) {
 int checkGrid(int argc, char **argv, double* uall) {
 	int width;
 	int numCycles;
-	int ok = 1;
+	int ok;
 	int i, j, n;
 	double *u0, *u1, *tptr;
 	double inTemp, diff;
@@ -123,18 +177,20 @@ int checkGrid(int argc, char **argv, double* uall) {
 		u1 = tptr;
 	}
 
+	ok = 1;
+
 	for (i=0; i<width; i++) {
 		for (j=0; j<width; j++) {
 			diff = dataAt(u1, i, j, width) - dataAt(uall, i, j, width);
 			if (fabs(diff) > THRESHOLD || isnan(diff)){
-				ok == 0;
+				ok = 0;
 				if (DEBUG)
 					printf("Error at %i, %i: difference of %.9lf\n", i, j, diff);
 			}
 		}
 	}
 
-	if (ok) {
+	if (1 == ok) {
 		printf("All solutions within error threshold\n");
 	} else {
 		printf("All solutions not within error threshold\n");
