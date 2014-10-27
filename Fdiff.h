@@ -4,8 +4,9 @@
 #define DEBUG 0
 #define PRINT_CYCLES 2
 #define COMM_COMP_RATIO 1.0e3
-#define THRESHOLD 1.0e-6
-#define BLOCKING 1
+#define THRESHOLD 1.0e-9 // can set to 0.0 as order of computation per update fixed
+#define BLOCKING 0
+#define DUMPGRID 1
 
 #define dataAt(DATA, I, J, W) (DATA)[(I) * (W) + (J)]
 

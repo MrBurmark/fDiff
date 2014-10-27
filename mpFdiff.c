@@ -329,7 +329,9 @@ int main(int argc, char **argv) {
 		
 		prt_time();
 
-		// dumpGrid(uall, size);
+#if DUMPGRID
+		dumpGrid(uall, size);
+#endif
 		
 		checkGrid(argc, argv, uall);
 	}
