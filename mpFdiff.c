@@ -317,6 +317,8 @@ int main(int argc, char **argv) {
 	t[2] += t_t1 - t_t0;
 	t[3] += t_t2 - t_t1;
 
+	free(uold);
+
 #if TIME_REDUCE
 	MPI_Reduce(t, tr, 4, MPI_DOUBLE, MPI_SUM, 0, CART_COMM);
 	if (0 == my_rank) {
@@ -341,9 +343,12 @@ int main(int argc, char **argv) {
 #if DUMPGRID
 		dumpGrid(uall, size);
 #endif
-#if DEBUG
+#if CHECK
 		checkGrid(argc, argv, uall);
 #endif
+		free(all_offsets);
+		free(all_sizes);
+		free(uall);
 	}
 
 	MPI_Type_free(&COL_DOUBLE);

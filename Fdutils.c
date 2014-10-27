@@ -195,6 +195,9 @@ int checkGrid(int argc, char **argv, double* uall) {
 	} else {
 		printf("All solutions not within error threshold\n");
 	}
+
+	free(u0);
+	free(u1);
 	return ok;
 }
 

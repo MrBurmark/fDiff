@@ -1,0 +1,975 @@
+2014-10-27 21:35:08 UTC
+# cycles 10 size 1202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 1 num procs
+total time 0.061346531
+communication, computation, gather (mem, comm)
+0.000105619
+0.053593874
+0.007647038 (0.003026009, 0.004621029)
+2014-10-27 21:35:08 UTC
+2014-10-27 21:35:08 UTC
+# cycles 10 size 1202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 1 num procs
+total time 0.062240124
+communication, computation, gather (mem, comm)
+0.000101566
+0.054397583
+0.007740974 (0.002974033, 0.004766941)
+2014-10-27 21:35:08 UTC
+2014-10-27 21:35:08 UTC
+# cycles 10 size 1202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 1 num procs
+total time 0.061044216
+communication, computation, gather (mem, comm)
+0.000100613
+0.053205729
+0.007737875 (0.003031015, 0.004706860)
+2014-10-27 21:35:08 UTC
+2014-10-27 21:35:08 UTC
+# cycles 10 size 1202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 1 num procs
+total time 0.061970711
+communication, computation, gather (mem, comm)
+0.000101805
+0.053668737
+0.008200169 (0.003196001, 0.005004168)
+2014-10-27 21:35:08 UTC
+2014-10-27 21:35:08 UTC
+# cycles 10 size 1202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 1 num procs
+total time 0.062032938
+communication, computation, gather (mem, comm)
+0.000107527
+0.053836346
+0.008089066 (0.003221035, 0.004868031)
+2014-10-27 21:35:08 UTC
+2014-10-27 21:35:10 UTC
+# cycles 10 size 1202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 4 num procs
+total time 0.137848139
+communication, computation, gather (mem, comm)
+0.035268545
+0.021800518
+0.080779076 (0.000233173, 0.080545902)
+2014-10-27 21:35:10 UTC
+2014-10-27 21:35:11 UTC
+# cycles 10 size 1202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 4 num procs
+total time 0.128380299
+communication, computation, gather (mem, comm)
+0.035577774
+0.018122435
+0.074680090 (0.000221014, 0.074459076)
+2014-10-27 21:35:11 UTC
+2014-10-27 21:35:12 UTC
+# cycles 10 size 1202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 4 num procs
+total time 0.132263184
+communication, computation, gather (mem, comm)
+0.034126520
+0.022441626
+0.075695038 (0.000223875, 0.075471163)
+2014-10-27 21:35:13 UTC
+2014-10-27 21:35:14 UTC
+# cycles 10 size 1202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 4 num procs
+total time 0.135743141
+communication, computation, gather (mem, comm)
+0.036097288
+0.018430948
+0.081214905 (0.000279903, 0.080935001)
+2014-10-27 21:35:14 UTC
+2014-10-27 21:35:15 UTC
+# cycles 10 size 1202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 4 num procs
+total time 0.126383543
+communication, computation, gather (mem, comm)
+0.034686089
+0.020309448
+0.071388006 (0.000257015, 0.071130991)
+2014-10-27 21:35:15 UTC
+2014-10-27 21:35:17 UTC
+# cycles 10 size 1202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 16 num procs
+total time 0.324762106
+communication, computation, gather (mem, comm)
+0.044439316
+0.017908573
+0.262414217 (0.000303984, 0.262110233)
+2014-10-27 21:35:18 UTC
+2014-10-27 21:35:19 UTC
+# cycles 10 size 1202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 16 num procs
+total time 0.326730967
+communication, computation, gather (mem, comm)
+0.061975718
+0.003256321
+0.261498928 (0.000319958, 0.261178970)
+2014-10-27 21:35:20 UTC
+2014-10-27 21:35:22 UTC
+# cycles 10 size 1202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 16 num procs
+total time 0.315027237
+communication, computation, gather (mem, comm)
+0.046581268
+0.009775877
+0.258670092 (0.000338078, 0.258332014)
+2014-10-27 21:35:22 UTC
+2014-10-27 21:35:24 UTC
+# cycles 10 size 1202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 16 num procs
+total time 0.297837257
+communication, computation, gather (mem, comm)
+0.055676937
+0.003086329
+0.239073992 (0.000298023, 0.238775969)
+2014-10-27 21:35:25 UTC
+2014-10-27 21:35:26 UTC
+# cycles 10 size 1202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1202 test with 10 cycles 16 num procs
+total time 0.327920437
+communication, computation, gather (mem, comm)
+0.056307077
+0.002994299
+0.268619061 (0.000229120, 0.268389940)
+2014-10-27 21:35:27 UTC
+2014-10-27 21:35:27 UTC
+# cycles 10 size 1602 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 1 num procs
+total time 0.110348701
+communication, computation, gather (mem, comm)
+0.000100136
+0.097478628
+0.012769938 (0.005508900, 0.007261038)
+2014-10-27 21:35:27 UTC
+2014-10-27 21:35:27 UTC
+# cycles 10 size 1602 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 1 num procs
+total time 0.109561920
+communication, computation, gather (mem, comm)
+0.000105143
+0.096582890
+0.012873888 (0.005596876, 0.007277012)
+2014-10-27 21:35:28 UTC
+2014-10-27 21:35:28 UTC
+# cycles 10 size 1602 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 1 num procs
+total time 0.108240128
+communication, computation, gather (mem, comm)
+0.000101566
+0.095661402
+0.012477160 (0.005318165, 0.007158995)
+2014-10-27 21:35:28 UTC
+2014-10-27 21:35:28 UTC
+# cycles 10 size 1602 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 1 num procs
+total time 0.108374119
+communication, computation, gather (mem, comm)
+0.000098944
+0.095809221
+0.012465954 (0.005306959, 0.007158995)
+2014-10-27 21:35:28 UTC
+2014-10-27 21:35:28 UTC
+# cycles 10 size 1602 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 1 num procs
+total time 0.108757973
+communication, computation, gather (mem, comm)
+0.000099421
+0.096136570
+0.012521982 (0.005281925, 0.007240057)
+2014-10-27 21:35:28 UTC
+2014-10-27 21:35:29 UTC
+# cycles 10 size 1602 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 4 num procs
+total time 0.218144417
+communication, computation, gather (mem, comm)
+0.039891481
+0.056856871
+0.121396065 (0.000199080, 0.121196985)
+2014-10-27 21:35:30 UTC
+2014-10-27 21:35:31 UTC
+# cycles 10 size 1602 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 4 num procs
+total time 0.223282099
+communication, computation, gather (mem, comm)
+0.056706429
+0.046217680
+0.120357990 (0.000208855, 0.120149136)
+2014-10-27 21:35:31 UTC
+2014-10-27 21:35:33 UTC
+# cycles 10 size 1602 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 4 num procs
+total time 0.222209215
+communication, computation, gather (mem, comm)
+0.059684038
+0.040240049
+0.122285128 (0.000195026, 0.122090101)
+2014-10-27 21:35:33 UTC
+2014-10-27 21:35:34 UTC
+# cycles 10 size 1602 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 4 num procs
+total time 0.229279518
+communication, computation, gather (mem, comm)
+0.064445257
+0.034595251
+0.130239010 (0.000267982, 0.129971027)
+2014-10-27 21:35:35 UTC
+2014-10-27 21:35:36 UTC
+# cycles 10 size 1602 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 4 num procs
+total time 0.226113081
+communication, computation, gather (mem, comm)
+0.063271046
+0.044235945
+0.118606091 (0.000200033, 0.118406057)
+2014-10-27 21:35:36 UTC
+2014-10-27 21:35:38 UTC
+# cycles 10 size 1602 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 16 num procs
+total time 0.507350922
+communication, computation, gather (mem, comm)
+0.096800566
+0.005698442
+0.404851913 (0.000660896, 0.404191017)
+2014-10-27 21:35:39 UTC
+2014-10-27 21:35:40 UTC
+# cycles 10 size 1602 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 16 num procs
+total time 0.514819384
+communication, computation, gather (mem, comm)
+0.088547230
+0.006026983
+0.420245171 (0.000628233, 0.419616938)
+2014-10-27 21:35:42 UTC
+2014-10-27 21:35:43 UTC
+# cycles 10 size 1602 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 16 num procs
+total time 0.535997152
+communication, computation, gather (mem, comm)
+0.088522673
+0.005864620
+0.441609859 (0.000613928, 0.440995932)
+2014-10-27 21:35:45 UTC
+2014-10-27 21:35:46 UTC
+# cycles 10 size 1602 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 16 num procs
+total time 0.493017435
+communication, computation, gather (mem, comm)
+0.082515717
+0.005872726
+0.404628992 (0.000627995, 0.404000998)
+2014-10-27 21:35:48 UTC
+2014-10-27 21:35:49 UTC
+# cycles 10 size 1602 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 1602 test with 10 cycles 16 num procs
+total time 0.546339512
+communication, computation, gather (mem, comm)
+0.097985268
+0.005984068
+0.442370176 (0.000679016, 0.441691160)
+2014-10-27 21:35:51 UTC
+2014-10-27 21:35:51 UTC
+# cycles 10 size 2402 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 1 num procs
+total time 0.309565067
+communication, computation, gather (mem, comm)
+0.000104427
+0.222704649
+0.086755991 (0.016376019, 0.070379972)
+2014-10-27 21:35:51 UTC
+2014-10-27 21:35:51 UTC
+# cycles 10 size 2402 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 1 num procs
+total time 0.309900284
+communication, computation, gather (mem, comm)
+0.000101328
+0.222381830
+0.087417126 (0.016471148, 0.070945978)
+2014-10-27 21:35:52 UTC
+2014-10-27 21:35:52 UTC
+# cycles 10 size 2402 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 1 num procs
+total time 0.318527937
+communication, computation, gather (mem, comm)
+0.000103474
+0.230206490
+0.088217974 (0.016459942, 0.071758032)
+2014-10-27 21:35:52 UTC
+2014-10-27 21:35:52 UTC
+# cycles 10 size 2402 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 1 num procs
+total time 0.311048985
+communication, computation, gather (mem, comm)
+0.000103951
+0.223855019
+0.087090015 (0.016463995, 0.070626020)
+2014-10-27 21:35:53 UTC
+2014-10-27 21:35:53 UTC
+# cycles 10 size 2402 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 1 num procs
+total time 0.309960365
+communication, computation, gather (mem, comm)
+0.000101089
+0.222958326
+0.086900949 (0.016440868, 0.070460081)
+2014-10-27 21:35:53 UTC
+2014-10-27 21:35:54 UTC
+# cycles 10 size 2402 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 4 num procs
+total time 0.505920410
+communication, computation, gather (mem, comm)
+0.099044323
+0.131264210
+0.275611877 (0.004201889, 0.271409988)
+2014-10-27 21:35:55 UTC
+2014-10-27 21:35:56 UTC
+# cycles 10 size 2402 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 4 num procs
+total time 0.520981550
+communication, computation, gather (mem, comm)
+0.087611914
+0.141435862
+0.291933775 (0.016166925, 0.275766850)
+2014-10-27 21:35:57 UTC
+2014-10-27 21:35:58 UTC
+# cycles 10 size 2402 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 4 num procs
+total time 0.514745951
+communication, computation, gather (mem, comm)
+0.092228651
+0.137880325
+0.284636974 (0.011075020, 0.273561954)
+2014-10-27 21:35:59 UTC
+2014-10-27 21:36:01 UTC
+# cycles 10 size 2402 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 4 num procs
+total time 0.545599461
+communication, computation, gather (mem, comm)
+0.110907555
+0.143860817
+0.290831089 (0.011260986, 0.279570103)
+2014-10-27 21:36:02 UTC
+2014-10-27 21:36:03 UTC
+# cycles 10 size 2402 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 4 num procs
+total time 0.512400150
+communication, computation, gather (mem, comm)
+0.102240324
+0.129884958
+0.280274868 (0.006000996, 0.274273872)
+2014-10-27 21:36:04 UTC
+2014-10-27 21:36:05 UTC
+# cycles 10 size 2402 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 16 num procs
+total time 1.201961517
+communication, computation, gather (mem, comm)
+0.186696053
+0.064294338
+0.950971127 (0.000055075, 0.950916052)
+2014-10-27 21:36:08 UTC
+2014-10-27 21:36:10 UTC
+# cycles 10 size 2402 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 16 num procs
+total time 1.166890383
+communication, computation, gather (mem, comm)
+0.167077065
+0.065404415
+0.934408903 (0.000053883, 0.934355021)
+2014-10-27 21:36:13 UTC
+2014-10-27 21:36:14 UTC
+# cycles 10 size 2402 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 16 num procs
+total time 1.149266005
+communication, computation, gather (mem, comm)
+0.182122946
+0.065418005
+0.901725054 (0.000048876, 0.901676178)
+2014-10-27 21:36:17 UTC
+2014-10-27 21:36:19 UTC
+# cycles 10 size 2402 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 16 num procs
+total time 1.164919615
+communication, computation, gather (mem, comm)
+0.194229841
+0.056993723
+0.913696051 (0.000053167, 0.913642883)
+2014-10-27 21:36:21 UTC
+2014-10-27 21:36:23 UTC
+# cycles 10 size 2402 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 2402 test with 10 cycles 16 num procs
+total time 1.119658470
+communication, computation, gather (mem, comm)
+0.187736511
+0.028542995
+0.903378963 (0.000054836, 0.903324127)
+2014-10-27 21:36:26 UTC
+2014-10-27 21:36:26 UTC
+# cycles 10 size 3202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 1 num procs
+total time 0.548953056
+communication, computation, gather (mem, comm)
+0.000107050
+0.394912004
+0.153934002 (0.028629065, 0.125304937)
+2014-10-27 21:36:27 UTC
+2014-10-27 21:36:27 UTC
+# cycles 10 size 3202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 1 num procs
+total time 0.546722651
+communication, computation, gather (mem, comm)
+0.000102282
+0.393100500
+0.153519869 (0.028630972, 0.124888897)
+2014-10-27 21:36:28 UTC
+2014-10-27 21:36:28 UTC
+# cycles 10 size 3202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 1 num procs
+total time 0.544531822
+communication, computation, gather (mem, comm)
+0.000104189
+0.391858578
+0.152569056 (0.028532028, 0.124037027)
+2014-10-27 21:36:28 UTC
+2014-10-27 21:36:28 UTC
+# cycles 10 size 3202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 1 num procs
+total time 0.548306465
+communication, computation, gather (mem, comm)
+0.000097513
+0.391175985
+0.157032967 (0.028640032, 0.128392935)
+2014-10-27 21:36:29 UTC
+2014-10-27 21:36:29 UTC
+# cycles 10 size 3202 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 1 num procs
+total time 0.548516750
+communication, computation, gather (mem, comm)
+0.000106335
+0.393991470
+0.154418945 (0.028572083, 0.125846863)
+2014-10-27 21:36:30 UTC
+2014-10-27 21:36:31 UTC
+# cycles 10 size 3202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 4 num procs
+total time 0.912235022
+communication, computation, gather (mem, comm)
+0.134842157
+0.268827677
+0.508565187 (0.026030064, 0.482535124)
+2014-10-27 21:36:33 UTC
+2014-10-27 21:36:34 UTC
+# cycles 10 size 3202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 4 num procs
+total time 0.917629242
+communication, computation, gather (mem, comm)
+0.116575003
+0.290072203
+0.510982037 (0.028569937, 0.482412100)
+2014-10-27 21:36:36 UTC
+2014-10-27 21:36:37 UTC
+# cycles 10 size 3202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 4 num procs
+total time 0.905489206
+communication, computation, gather (mem, comm)
+0.107937574
+0.297687531
+0.499864101 (0.021735191, 0.478128910)
+2014-10-27 21:36:38 UTC
+2014-10-27 21:36:40 UTC
+# cycles 10 size 3202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 4 num procs
+total time 0.921516657
+communication, computation, gather (mem, comm)
+0.131530523
+0.280358315
+0.509627819 (0.018440962, 0.491186857)
+2014-10-27 21:36:41 UTC
+2014-10-27 21:36:42 UTC
+# cycles 10 size 3202 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 4 num procs
+total time 0.907911301
+communication, computation, gather (mem, comm)
+0.114351273
+0.290112019
+0.503448009 (0.017688036, 0.485759974)
+2014-10-27 21:36:44 UTC
+2014-10-27 21:36:46 UTC
+# cycles 10 size 3202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 16 num procs
+total time 13.998916864
+communication, computation, gather (mem, comm)
+0.304045916
+0.108171940
+13.586699009 (0.001817942, 13.584881067)
+2014-10-27 21:37:03 UTC
+2014-10-27 21:37:05 UTC
+# cycles 10 size 3202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 16 num procs
+total time 2.050380230
+communication, computation, gather (mem, comm)
+0.272640944
+0.162007332
+1.615731955 (0.001781940, 1.613950014)
+2014-10-27 21:37:10 UTC
+2014-10-27 21:37:12 UTC
+# cycles 10 size 3202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 16 num procs
+total time 2.030888319
+communication, computation, gather (mem, comm)
+0.300622702
+0.128648520
+1.601617098 (0.001794100, 1.599822998)
+2014-10-27 21:37:31 UTC
+2014-10-27 21:37:33 UTC
+# cycles 10 size 3202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 16 num procs
+total time 2.040169716
+communication, computation, gather (mem, comm)
+0.303042889
+0.132822752
+1.604304075 (0.001807928, 1.602496147)
+2014-10-27 21:37:54 UTC
+2014-10-27 21:37:58 UTC
+# cycles 10 size 3202 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 3202 test with 10 cycles 16 num procs
+total time 2.042026043
+communication, computation, gather (mem, comm)
+0.304524183
+0.115439892
+1.622061968 (0.001810074, 1.620251894)
+2014-10-27 21:38:16 UTC
+2014-10-27 21:38:18 UTC
+# cycles 10 size 4802 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 1 num procs
+total time 10.194717884
+communication, computation, gather (mem, comm)
+0.000116825
+9.421125889
+0.773475170 (0.496654987, 0.276820183)
+2014-10-27 21:38:33 UTC
+2014-10-27 21:38:33 UTC
+# cycles 10 size 4802 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 1 num procs
+total time 1.242326975
+communication, computation, gather (mem, comm)
+0.000109434
+0.896699667
+0.345517874 (0.063562870, 0.281955004)
+2014-10-27 21:38:35 UTC
+2014-10-27 21:38:35 UTC
+# cycles 10 size 4802 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 1 num procs
+total time 1.232508421
+communication, computation, gather (mem, comm)
+0.000109434
+0.893173933
+0.339225054 (0.061147928, 0.278077126)
+2014-10-27 21:38:36 UTC
+2014-10-27 21:38:36 UTC
+# cycles 10 size 4802 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 1 num procs
+total time 1.238340139
+communication, computation, gather (mem, comm)
+0.000114918
+0.893681288
+0.344543934 (0.061080933, 0.283463001)
+2014-10-27 21:38:38 UTC
+2014-10-27 21:38:38 UTC
+# cycles 10 size 4802 # initializations 36 # procs 1
+Using non-blocking sends and receives
+Reorder enabled
+Using 1x1 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 1 num procs
+total time 12.593290329
+communication, computation, gather (mem, comm)
+0.000111580
+9.126947880
+3.466230869 (0.591284990, 2.874945879)
+2014-10-27 21:38:53 UTC
+2014-10-27 21:38:56 UTC
+# cycles 10 size 4802 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 4 num procs
+total time 2.013157129
+communication, computation, gather (mem, comm)
+0.062205553
+0.843151569
+1.107800007 (0.050497055, 1.057302952)
+2014-10-27 21:38:59 UTC
+2014-10-27 21:39:00 UTC
+# cycles 10 size 4802 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 4 num procs
+total time 2.055754185
+communication, computation, gather (mem, comm)
+0.117484093
+0.790733099
+1.147536993 (0.063197851, 1.084339142)
+2014-10-27 21:39:04 UTC
+2014-10-27 21:39:05 UTC
+# cycles 10 size 4802 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 4 num procs
+total time 2.018891096
+communication, computation, gather (mem, comm)
+0.109728813
+0.804763317
+1.104398966 (0.051960945, 1.052438021)
+2014-10-27 21:39:09 UTC
+2014-10-27 21:39:10 UTC
+# cycles 10 size 4802 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 4 num procs
+total time 2.040313959
+communication, computation, gather (mem, comm)
+0.130229712
+0.801231146
+1.108853102 (0.054963112, 1.053889990)
+2014-10-27 21:39:50 UTC
+2014-10-27 21:39:51 UTC
+# cycles 10 size 4802 # initializations 36 # procs 4
+Using non-blocking sends and receives
+Reorder enabled
+Using 2x2 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 4 num procs
+total time 2.038056374
+communication, computation, gather (mem, comm)
+0.066107750
+0.849110603
+1.122838020 (0.054821968, 1.068016052)
+2014-10-27 21:39:55 UTC
+2014-10-27 21:39:56 UTC
+# cycles 10 size 4802 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 16 num procs
+total time 4.604783773
+communication, computation, gather (mem, comm)
+0.325249195
+0.717760801
+3.561773777 (0.010686874, 3.551086903)
+2014-10-27 21:40:30 UTC
+2014-10-27 21:40:32 UTC
+# cycles 10 size 4802 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 16 num procs
+total time 4.556206703
+communication, computation, gather (mem, comm)
+0.351218939
+0.626365900
+3.578621864 (0.045562983, 3.533058882)
+2014-10-27 21:41:21 UTC
+2014-10-27 21:41:23 UTC
+# cycles 10 size 4802 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 16 num procs
+total time 4.457088232
+communication, computation, gather (mem, comm)
+0.234619141
+0.766324997
+3.456144094 (0.003878117, 3.452265978)
+2014-10-27 21:41:57 UTC
+2014-10-27 21:41:59 UTC
+# cycles 10 size 4802 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 16 num procs
+total time 4.404398203
+communication, computation, gather (mem, comm)
+0.407045126
+0.545232058
+3.452121019 (0.062521935, 3.389599085)
+2014-10-27 21:42:46 UTC
+2014-10-27 21:42:48 UTC
+# cycles 10 size 4802 # initializations 36 # procs 16
+Using non-blocking sends and receives
+Reorder enabled
+Using 4x4 cartesian grid
+cycle 0
+results for size 4802 test with 10 cycles 16 num procs
+total time 4.445692539
+communication, computation, gather (mem, comm)
+0.332910538
+0.615937948
+3.496844053 (0.048319101, 3.448524952)
+2014-10-27 21:43:25 UTC

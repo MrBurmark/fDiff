@@ -8,6 +8,7 @@
 #define REORDER 1
 #define BLOCKING 0
 #define DUMPGRID 1
+#define CHECK 1
 #define TIME_REDUCE 0
 
 #define dataAt(DATA, I, J, W) (DATA)[(I) * (W) + (J)]
