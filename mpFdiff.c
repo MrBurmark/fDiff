@@ -78,6 +78,11 @@ int main(int argc, char **argv) {
 #else
 		printf("Using non-blocking sends and receives\n");
 #endif
+#if REORDER
+		printf("Reorder enabled\n");
+#else
+		printf("Reorder disabled\n");
+#endif
 	}
 
 	MPI_Bcast(tmp, 2, MPI_INT, 0, MPI_COMM_WORLD);
@@ -88,7 +93,7 @@ int main(int argc, char **argv) {
 
 	MPI_Dims_create(num_procs, 2, dims);
 
-	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &CART_COMM);
+	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, REORDER, &CART_COMM);
 	MPI_Cart_coords(CART_COMM, my_rank, 2, my_coord);
 
 	// break grid up so neighbors of opposite types
@@ -224,7 +229,7 @@ int main(int argc, char **argv) {
 		t[1] += t_t2 - t_t1;
 
 		if(DEBUG) {
-			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+			printf("my rank %i, my coords %i, %i, my computations %i\n", my_rank, my_coord[0], my_coord[1], (stop[0] - start[0]) * (stop[1] - start[1]));
 			mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
 			MPI_Barrier(CART_COMM);
 		}
@@ -286,7 +291,7 @@ int main(int argc, char **argv) {
 		t[1] += (t_t2 - t_t1) + (t_t4 - t_t3);
 
 		if(DEBUG) {
-			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
+			printf("my rank %i, my coords %i, %i, my computations %i\n", my_rank, my_coord[0], my_coord[1], (stop[0] - start[0]) * (stop[1] - start[1]));
 			mpPrintGrid(uold, my_size[0]+2, my_size[1]+2);
 			MPI_Barrier(CART_COMM);
 		}
@@ -312,16 +317,20 @@ int main(int argc, char **argv) {
 	t[2] += t_t1 - t_t0;
 	t[3] += t_t2 - t_t1;
 
+#if TIME_REDUCE
 	MPI_Reduce(t, tr, 4, MPI_DOUBLE, MPI_SUM, 0, CART_COMM);
+	if (0 == my_rank) {
+		printf("Averaging times from all processes\n");
+		for(i=1;i<4;i++)
+			t[i] = tr[i] / (double)num_procs;
+	}
+#endif
 
 	if (0 == my_rank) {
 		if(DEBUG) {
 			printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
 			mpPrintGrid(uall, size, size);
 		}
-
-		for(i=1;i<4;i++)
-			t[i] = tr[i] / (double)num_procs;
 
 		printf("results for size %i test with %i cycles %i num procs\n", size, numCycles, num_procs);
 		printf("total time %.9lf\n", t[0]+t[1]+t[2]+t[3]);

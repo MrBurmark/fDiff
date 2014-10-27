@@ -2,11 +2,13 @@
 #define _FDIFF_H_
 
 #define DEBUG 0
-#define PRINT_CYCLES 2
+#define PRINT_CYCLES 10
 #define COMM_COMP_RATIO 1.0e3
 #define THRESHOLD 1.0e-9 // can set to 0.0 as order of computation per update fixed
+#define REORDER 1
 #define BLOCKING 0
 #define DUMPGRID 1
+#define TIME_REDUCE 0
 
 #define dataAt(DATA, I, J, W) (DATA)[(I) * (W) + (J)]
 
