@@ -341,8 +341,9 @@ int main(int argc, char **argv) {
 #if DUMPGRID
 		dumpGrid(uall, size);
 #endif
-		
+#if DEBUG
 		checkGrid(argc, argv, uall);
+#endif
 	}
 
 	MPI_Type_free(&COL_DOUBLE);
