@@ -7,7 +7,8 @@
 #define THRESHOLD 1.0e-9 // can set to 0.0 as order of computation per update fixed
 #define REORDER 1
 #define BLOCKING 0
-#define DUMPGRID 1
+#define RMA 0
+#define DUMPGRID 0
 #define CHECK 1
 #define TIME_REDUCE 0
 

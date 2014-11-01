@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 	int num_procs, my_rank, their_rank, my_coord[2], their_coords[2];
 	int S_rank, N_rank, E_rank, W_rank;
 	int tmp[2], dims[2] = {0,0}, periods[2] = {0,0};
-	int *all_sizes, *all_offsets;
+	int *all_sizes, *all_offsets, my_offset;
 	double *uall, *uold, *unew, *tptr;
 	double t[4] = {0.0,0.0,0.0,0.0}, tr[4], t_t0, t_t1, t_t2, t_t3, t_t4;
 	double inTemp;
@@ -44,7 +44,8 @@ int main(int argc, char **argv) {
 	int numInit;
 	MPI_Status status;
 	MPI_Request request[8];
-	MPI_Comm CART_COMM;
+	MPI_Comm CART_COMM, SHARE_COMM;
+	MPI_Win THE_WIN;
 	MPI_Datatype COL_DOUBLE, TMP_BLOCK_DOUBLE, BLOCK_DOUBLE, MID_DOUBLE;
 
 	FILE *fp;
@@ -99,6 +100,8 @@ int main(int argc, char **argv) {
 	// break grid up so neighbors of opposite types
 	// allows matching sends and recieves in proper order
 	my_type = (my_coord[0] + my_coord[1])%2;
+
+	my_offset = (find_pos(my_coord[0], dims[0], calc_size) + 1) * size + find_pos(my_coord[1], dims[1], calc_size) + 1;
 
 	if (0 == my_rank) {
 		printf("Using %ix%i cartesian grid\n", dims[0], dims[1]);
@@ -158,14 +161,43 @@ int main(int argc, char **argv) {
 		mpPrintGrid(uall, size, size);
 	}
 
+#if !RMA
+
 	uold = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
 
 	MPI_Scatterv(uall, all_sizes, all_offsets, BLOCK_DOUBLE, 
 				 uold + my_size[1]+3, 1, MID_DOUBLE, 0, CART_COMM);
 
-	if (0 == my_rank) free(uall);
+
 
 	unew = (double *) calloc((my_size[0]+2) * (my_size[1]+2), sizeof(double));
+
+#elif RMA
+
+	MPI_Alloc_mem((my_size[0]+2) * (my_size[1]+2) * sizeof(double), MPI_INFO_NULL, &uold);
+
+	if (0 == my_rank) {
+		MPI_Win_create(uall, size*size*sizeof(double), sizeof(double), MPI_INFO_NULL, &THE_WIN);
+	} else {
+		MPI_Win_create(NULL, 0, sizeof(double), MPI_INFO_NULL, &THE_WIN);
+	}
+
+	MPI_Win_fence(THE_WIN);
+
+	MPI_Get(uold, 1, MID_DOUBLE, 0, my_offset, 1, BLOCK_DOUBLE, THE_WIN);
+
+	MPI_Win_fence(THE_WIN);
+
+	MPI_Win_free(&THE_WIN);
+
+	if (0 == my_rank) free(uall);
+
+	MPI_Alloc_mem((my_size[0]+2) * (my_size[1]+2) * sizeof(double), MPI_INFO_NULL, &unew);
+
+	
+	
+
+#endif
 
 	if(DEBUG) {
 		printf("my rank %i, my coords %i, %i\n", my_rank, my_coord[0], my_coord[1]);
@@ -180,6 +212,8 @@ int main(int argc, char **argv) {
 	stop[1] = my_size[1]+1;
 
 	MPI_Barrier(CART_COMM);
+
+
 
 #if BLOCKING
 
